@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="My kanban chart">
+<meta name="author" content="Marcin Wachowiak">
+<link rel="icon" href="static/resources/img/favicon.ico">
+
+<title>Kanban chart</title>
+
+
+<!-- 
+<link rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+  integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+  crossorigin="anonymous">
+
+<link rel="stylesheet" href="static/resources/css/base.css" />
+
+<script
+  src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script
+  src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+  integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+  crossorigin="anonymous"></script>
+
+<link rel="stylesheet"
+  href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+ -->
+<link rel="stylesheet" href="static/resources/css/bootstrap.min.css">
+<link rel="stylesheet" href="static/resources/css/base.css" />
+
+<script src="static/resources/js/jquery.min.js"></script>
+<script src="static/resources/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="static/resources/css/jquery-ui.css">
+<script src="static/resources/js/jquery-ui.js"></script>
+<script src="static/resources/js/base.js"></script>
+
+
+
+<script type="text/javascript">
+
+var $SERVICE = "http://localhost:8000/static/resources/sample.json";
+var $projectData;
+
+  $.getJSON($SERVICE,
+          function() {
+            console.log("request successfully sent");
+          })
+      .done(
+          function(data) {
+            console.log("data received");
+            $projectData = data;
+            parseProjectData($projectData);
+          })
+      .fail(function() {
+        console.log("error");
+      	  })
+      .always(function() {
+        console.log("complete");
+        setDroppableAccept();
+      });
+</script>
+
+</head>
+<body class="body">
+
+  <div class="container">
+
+    <div class="row">
+      <div class="col-xs-3 row-title">Tasks</div>
+      <div class="col-xs-3 row-title">In progress</div>
+      <div class="col-xs-3 row-title">To verify</div>
+      <div class="col-xs-3 row-title">Done</div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"
+            aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <h4 class="modal-title" id="myModalLabel">Task details</h4>
+        </div>
+        <div class="modal-body">
+          <div class="table-responsive">
+            <table class="table">
+              <tr>
+                <td>Task ID</td>
+                <td id="task-details-table-id"></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</body>
+</html>
