@@ -1,14 +1,17 @@
 {
   "scripts": {
-    "test": "gulp test",
-    "watch": "gulp watch"
+    "test": "NODE_ENV=development gulp test",
+    "watch": "gulp watch",
+    "start": "NODE_ENV=development gulp"
   },
   "dependencies": {
-    "mongoose": "4.4.5"
+    "mongoose": "4.4.5",
+    "restify": "4.0.4"
   },
   "devDependencies": {
     "gulp": "3.8.11",
     "gulp-mocha": "2.0.1",
-    "mocha": "2.2.4"
+    "gulp-nodemon": "2.0.6",
+    "node-uuid": "1.4.7"
   }
 }
