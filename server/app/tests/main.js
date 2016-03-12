@@ -1,10 +1,10 @@
-var restify = require('restify');
 var assert = require('assert');
-var Config = require('../core/config');
-config = new Config();
+var wagner = require('wagner-core');
+require('../core/di-test');
 
-var client = restify.createJsonClient({
-    url: 'http://127.0.0.1:' + config.server_port
+var client;
+wagner.invoke(function(testclient){
+	client = testclient;
 });
 
 describe('service: hello', function() {
@@ -12,7 +12,8 @@ describe('service: hello', function() {
     // Test #1
     describe('200 response check', function() {
         it('should get a 200 response', function(done) {
-            client.get('/', function(err, req, res, data) {
+
+        	client.get('/', function(err, req, res, data) {
             	
                 if (err) {
                     throw new Error(err);

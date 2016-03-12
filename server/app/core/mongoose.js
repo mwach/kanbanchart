@@ -1,11 +1,15 @@
-var Config = require('./config'),
-config = new Config();
+var wagner = require('wagner-core');
+
+var cfg;
+var config = wagner.invoke(function(config){
+	cfg = config;
+});
 
 var mongoose = require('mongoose')
     , fs = require('fs')
     , models_path = process.cwd() + '/app/models'
 
-mongoose.connect(config.mongo_url, {server:{auto_reconnect:true}});
+mongoose.connect(cfg.mongo_url, {server:{auto_reconnect:true}});
 var db = mongoose.connection;
 
 db.on('error', function (err) {
@@ -16,7 +20,7 @@ db.once('open', function callback() {
 });
 db.on('disconnected', function() {
     console.error('MongoDB disconnected!');
-    mongoose.connect(config.mongo_url, {server:{auto_reconnect:true}});
+    mongoose.connect(cfg.mongo_url, {server:{auto_reconnect:true}});
 });
 db.on('reconnected', function () {
     console.info('MongoDB reconnected!');

@@ -6,7 +6,9 @@
   },
   "dependencies": {
     "mongoose": "4.4.5",
-    "restify": "4.0.4"
+    "restify": "4.0.4",
+    "restify-errors": "4.2.1",
+    "wagner-core": "0.2.0"
   },
   "devDependencies": {
     "gulp": "3.8.11",

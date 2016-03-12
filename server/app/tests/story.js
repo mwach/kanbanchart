@@ -1,12 +1,11 @@
-var restify = require('restify');
 var assert = require('assert');
 var uuid = require('node-uuid');
-var Config = require('../core/config');
-config = new Config();
+var wagner = require('wagner-core');
+require('../core/di-test');
 
-
-var client = restify.createJsonClient({
-	url : 'http://127.0.0.1:' + config.server_port
+var client;
+wagner.invoke(function(testclient){
+	client = testclient;
 });
 
 describe('service: story', function() {
@@ -15,24 +14,23 @@ describe('service: story', function() {
 
 	  before(function(done) {
 
-	    var code = uuid.v4();
 	    var request = {
-	      code : code,
+	      code : uuid.v4(),
 	      name : 'Sprint product',
 	      description : 'Sprint product'
 	    }
 	    client.post('/products', request, function(err, req, res, resData) {
-	      product = resData.data;
+	      product = resData;
 	      done();
 	    });
 	  });
 
 	// Test #1
 	describe('get a story using incorrect id', function() {
-		it('should get a 401 response', function(done) {
+		it('should get a 400 response', function(done) {
 			client.get('/stories/1', function(err, req, res, data) {
 
-				if (res.statusCode != 401) {
+				if (res.statusCode != 400) {
 					throw new Error('invalid response from /stories/1');
 				}
 				done();
@@ -55,16 +53,16 @@ describe('service: story', function() {
 					throw new Error('invalid response from /stories');
 				}
 				
-				if(data.data.title != "test title"){
+				if(data.title != "test title"){
 					throw new Error('invalid response from /stories');					
 				}
 				
-				client.get('/stories/' + data.data.id, function(err, req, res, data) {
+				client.get('/stories/' + data.id, function(err, req, res, data) {
 
 					if (res.statusCode != 200) {
 						throw new Error('invalid response from /stories');
 					}
-					if(data.data.title != "test title"){
+					if(data.title != "test title"){
 						throw new Error('invalid response from /stories');					
 					}
 					
@@ -94,14 +92,14 @@ describe('service: story', function() {
 				if (res.statusCode != 201) {
 					throw new Error('invalid response from /tasks');
 				}
-				if(taskData.data.taskId == undefined){
+				if(taskData.taskId == undefined){
 					throw new Error('invalid response from /stories');					
 				}
 
 				var storyData = { 
 						product: product.id,
 						title: "test title",
-						tasks: [taskData.data.id ]
+						tasks: [taskData.id ]
 			        };
 
 				client.post('/stories', storyData, function(err, req, res, data) {
@@ -110,11 +108,11 @@ describe('service: story', function() {
 						throw new Error('invalid response from /stories');
 					}
 
-					if (data.data.tasks.length != 1) {
+					if (data.tasks.length != 1) {
 						throw new Error('invalid response from /stories');
 					}
 
-					if (data.data.tasks[0] != taskData.data.id) {
+					if (data.tasks[0] != taskData.id) {
 						throw new Error('invalid response from /stories');
 					}
 

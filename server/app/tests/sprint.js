@@ -1,11 +1,11 @@
-var restify = require('restify');
 var assert = require('assert');
 var uuid = require('node-uuid');
-var Config = require('../core/config');
-config = new Config();
+var wagner = require('wagner-core');
+require('../core/di-test');
 
-var client = restify.createJsonClient({
-  url : 'http://127.0.0.1:' + config.server_port
+var client;
+wagner.invoke(function(testclient) {
+  client = testclient;
 });
 
 describe('service: sprint', function() {
@@ -21,7 +21,7 @@ describe('service: sprint', function() {
       description : 'Sprint product'
     }
     client.post('/products', request, function(err, req, res, resData) {
-      product = resData.data;
+      product = resData;
       done();
     });
   });
@@ -31,28 +31,23 @@ describe('service: sprint', function() {
         function(done) {
 
           var sprintData = {
+            product : product.id,
             startDate : "2012-03-01",
-            endDate : "2012-03-31",
+            endDate : "2012-03-31"
           };
-          product.sprints.push(sprintData);
 
-          client.put('/products/' + product.code, product, function(err, req,
-              res, data) {
+          client.post('/sprints', sprintData, function(err, req, res, data) {
 
-            if (res.statusCode != 200) {
+            if (res.statusCode != 201) {
               throw new Error('invalid response from /sprints');
             }
 
-            client.get('/products/' + product.code, function(err, req, res,
-                projectData) {
+            client.get('/sprints/' + data.id, function(err, req, res,
+                sprintResponse) {
 
               if (res.statusCode != 200) {
                 throw new Error('invalid response from /sprints');
               }
-              if (projectData.data.sprints.length != 1) {
-                throw new Error('invalid response from /sprints');
-              }
-              var sprintResponse = projectData.data.sprints[0];
               if (new Date(sprintData.startDate).getTime() != new Date(
                   sprintResponse.startDate).getTime()) {
                 throw new Error('invalid response from /sprints');
@@ -73,64 +68,110 @@ describe('service: sprint', function() {
         function(done) {
 
           var sprintData = {
+            product : product.id,
             startDate : "2012-03-01",
             endDate : "2012-03-31",
           };
-          product.sprints.push(sprintData);
 
-          client.put('/products/' + product.code, product, function(err, req,
-              res, data) {
+          client.post('/sprints', sprintData, function(err, req, res,
+              sprintDataResponse) {
 
-            client.get('/products/' + product.code, function(err, req, res,
-                projectData) {
+            client.get('/sprints/' + sprintDataResponse.id, function(err, req,
+                res, sprintResponse) {
 
-              var sprintResponse = projectData.data.sprints[0];
               // now, create a story
               var storyOne = {
-                sprint : sprintResponse._id,
                 title : 'Some sample title',
-                product: product.id,
+                product : product.id,
                 tasks : []
               };
               var storyTwo = {
-                sprint : sprintResponse._id,
-                product: product.id,
+                product : product.id,
                 title : 'Some sample title2',
                 tasks : []
               };
 
               client.post('/stories', storyOne, function(err, req, res,
-                  storyData) {
+                  storyOneResponse) {
 
                 if (res.statusCode != 201) {
                   throw new Error('invalid response from /sprints');
                 }
 
                 client.post('/stories', storyTwo, function(err, req, res,
-                    storyData) {
+                    storyTwoResponse) {
 
                   if (res.statusCode != 201) {
                     throw new Error('invalid response from /sprints');
                   }
 
+                  sprintDataResponse.stories.push(storyOneResponse.id);
+                  sprintDataResponse.stories.push(storyTwoResponse.id);
 
-                  client.get('/sprints/' + storyOne.sprint, function(err, req,
-                      res, sprintData) {
+                  client.put('/sprints/' + sprintResponse.id, sprintDataResponse,
+                      function(err, req, res, sprintDataUpd) {
 
-
-                    if (res.statusCode != 200) {
-                      throw new Error('invalid response from /sprints');
-                    }
-                    if (sprintData.data.length != 2) {
-                      throw new Error('invalid response from /sprints');
-                    }
-                    if (sprintData.data[0].title != storyOne.title) {
-                      throw new Error('invalid response from /sprints');
-                    }
-                    done();
-                  });
+                        client.get('/sprints/' + sprintResponse.id, function(err,
+                            req, res, sprintData) {
+                          if (res.statusCode != 200) {
+                            throw new Error('invalid response from /sprints');
+                          }
+                          if (sprintData.stories.length != 2) {
+                            throw new Error('invalid response from /sprints');
+                          }
+                          if (sprintData.stories[0].title != storyOne.title) {
+                            throw new Error('invalid response from /sprints');
+                          }
+                          done();
+                        });
+                      });
                 });
               });
+            });
+          });
+        });
+  });
+
+  describe('create a sprint with stories and then remove stories', function() {
+    it('should create a sprint and then remove assigned stories',
+        function(done) {
+
+          // now, create a story
+          var storyOne = {
+            title : 'Some sample title',
+            product : product.id,
+          };
+
+          client.post('/stories', storyOne, function(err, req, res,
+              storyOneResponse) {
+
+            var sprintData = {
+              product : product.id,
+              startDate : "2012-03-01",
+              endDate : "2012-03-31",
+              stories : [ storyOneResponse.id ]
+            };
+
+            client.post('/sprints', sprintData, function(err, req, res,
+                sprintDataResponse) {
+
+              sprintDataResponse.stories.shift();
+              // delete
+              client.put('/sprints/' + sprintDataResponse.id, sprintDataResponse,
+                  function(err, req, res, sprintDataUpd) {
+
+                    client.get('/sprints/' + sprintDataResponse.id, function(err,
+                        req, res, sprintData) {
+                      
+                      if (res.statusCode != 200) {
+                        throw new Error('invalid response from /sprints');
+                      }
+                      if (sprintData.stories.length != 0) {
+                        throw new Error('invalid response from /sprints');
+                      }
+                      done();
+                    });
+                  });
             });
           });
         });

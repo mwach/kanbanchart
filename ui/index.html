@@ -43,7 +43,8 @@
 
 <script type="text/javascript">
 
-var $SERVICE = "http://localhost:8000/static/resources/sample.json";
+//var $SERVICE = "http://localhost:8000/static/resources/sample.json";
+var $SERVICE = "http://localhost:3000/users/Marcin";
 var $projectData;
 
   $.getJSON($SERVICE,
@@ -52,7 +53,8 @@ var $projectData;
           })
       .done(
           function(data) {
-            console.log("data received");
+            console.log("data received: " + JSON.stringify(data));
+            alert(data.products[0].code);
             $projectData = data;
             parseProjectData($projectData);
           })

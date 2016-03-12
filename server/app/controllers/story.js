@@ -1,54 +1,18 @@
-var mongoose = require('mongoose');
+var wagner = require('wagner-core');
 
-Story = mongoose.model("Story"); 
-ObjectId = mongoose.Types.ObjectId;
-
-function isObjectId(n) {
-	  return mongoose.Types.ObjectId.isValid(n);
-	}
-
-
-function validateObjectId(req, res, next){
-
-	objId = req.params.id;
-
-	if(!isObjectId(objId)){
-        res.status(401);
-        res.json({
-            type: false,
-            data: "Invalid ID provided: " + objId
-        });
-        return false;
-	}
-	return true;
-}
+var Story;
+var sender;
+wagner.invoke(function(story){
+	Story = story;
+});
+wagner.invoke(function(responseHelper) {
+  sender = responseHelper;
+});
 
 exports.viewStory = function(req, res, next) {
 
-	if(!validateObjectId(req, res, next)){
-        return;
-	}
-
-	Story.findById(new ObjectId(req.params.id)).populate('tasks').exec( function(err, story) {
-		if (err) {
-            res.status(500);
-            res.json({
-                type: false,
-                data: "Error occured: " + err
-            })
-        } else {
-            if (story) {
-                res.json({
-                    type: true,
-                    data: story
-                })
-            } else {
-                res.json({
-                    type: false,
-                    data: "Story: " + req.params.id + " not found"
-                })
-            }
-        }
+	Story.findById(req.params.id).populate('tasks').exec( function(err, result) {
+    sender.putResponse(req.params.id, res, err, result, next);
     })
 }
 
@@ -56,71 +20,22 @@ exports.createStory = function(req, res, next) {
 
 	var storyModel = new Story(req.body);
 
-	storyModel.save(function(err, story) {
-		if (err) {
-			res.status(500);
-			res.json({
-				type : false,
-				data : "Error occured: " + err
-			})
-		} else {
-			res.status(201);
-			res.json({
-				type : true,
-				data : story
-			})
-		}
+	storyModel.save(function(err, result) {
+    sender.postResponse(res, err, result, next);
 	})
 }
 
 exports.updateStory = function(req, res, next) {
 
-	if(!validateObjectId(req, res, next)){
-        return;
-	}
-
 	var updatedStoryModel = new Story(req.body);
-    Story.findByIdAndUpdate(new ObjectId(req.params.id), updatedStoryModel, function(err, story) {
-        if (err) {
-            res.status(500);
-            res.json({
-                type: false,
-                data: "Error occured: " + err
-            })
-        } else {
-            if (story) {
-                res.json({
-                    type: true,
-                    data: story
-                })
-            } else {
-                res.json({
-                    type: false,
-                    data: "Story: " + req.params.id + " not found"
-                })
-            }
-        }
+    Story.findByIdAndUpdate(req.params.id, updatedStoryModel, function(err, result) {
+      sender.putResponse(req.params.id, res, err, result, next);
     })
 }
 
 exports.deleteStory = function(req, res, next) {
 
-	if(!validateObjectId(req, res, next)){
-        return; 
-	}
-
-	Story.findByIdAndRemove(new Object(req.params.id), function(err, story) {
-        if (err) {
-            res.status(500);
-            res.json({
-                type: false,
-                data: "Error occured: " + err
-            })
-        } else {
-            res.json({
-                type: true,
-                data: "Story: " + req.params.id + " deleted successfully"
-            })
-        }
-    })
+	Story.findByIdAndRemove(req.params.id, function(err, result) {
+    sender.putResponse(req.params.id, res, err, result, next);
+   })
 }

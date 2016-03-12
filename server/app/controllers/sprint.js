@@ -1,51 +1,49 @@
-var mongoose = require('mongoose');
+var wagner = require('wagner-core');
 
-ObjectId = mongoose.Types.ObjectId;
+var Sprint;
+wagner.invoke(function(sprint) {
+  Sprint = sprint;
+});
 
-function isObjectId(n) {
-	  return mongoose.Types.ObjectId.isValid(n);
-	}
+var sender;
+wagner.invoke(function(responseHelper) {
+  sender = responseHelper;
+});
 
-function validateObjectId(req, res, next){
+exports.createSprint = function(req, res, next) {
 
-	objId = req.params.id;
-
-	if(!isObjectId(objId)){
-        res.status(401);
-        res.json({
-            type: false,
-            data: "Invalid ID provided: " + objId
-        });
-        return false;
-	}
-	return true;
+  var sprintModel = new Sprint(req.body);
+  sprintModel.save(function(err, result) {
+    sender.postResponse(res, err, result, next);
+  });
 }
 
 exports.viewSprint = function(req, res, next) {
 
-	if(!validateObjectId(req, res, next)){
-        return;
-	}
+  Sprint.findById(req.params.id).populate('stories').exec(
+      function(err, sprintData) {
 
-	Story.find({'sprint' : req.params.id}).populate('tasks').exec( function(err, sprintData) {
-		if (err) {
-            res.status(500);
-            res.json({
-                type: false,
-                data: "Error occured: " + err
-            })
-        } else {
-            if (sprintData) {
-                res.json({
-                    type: true,
-                    data: sprintData
-                })
-            } else {
-                res.json({
-                    type: false,
-                    data: "Sprint: " + req.params.id + " not found"
-                })
-            }
-        }
-    })
+        sender.putResponse(req.params.id, res, err, sprintData, next);
+      })
+}
+
+exports.updateSprint = function(req, res, next) {
+
+  var updatedData = {
+    startDate : req.body.startDate,
+    endDate : req.body.endDate,
+    stories : req.body.stories
+  };
+  Sprint.findByIdAndUpdate(req.params.id, updatedData, function(
+      err, result) {
+    sender.putResponse(req.params.id, res, err, result, next);
+  })
+}
+
+exports.viewCurrentSprintForProduct = function(req, res, next) {
+  Story.find({
+    'product' : req.params.productId
+  }).populate('tasks').exec(function(err, result) {
+    sender.putResponse(req.params.productId, res, err, result, next);
+  })
 }
