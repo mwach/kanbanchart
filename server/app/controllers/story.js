@@ -27,8 +27,7 @@ exports.createStory = function(req, res, next) {
 
 exports.updateStory = function(req, res, next) {
 
-	var updatedStoryModel = new Story(req.body);
-    Story.findByIdAndUpdate(req.params.id, updatedStoryModel, function(err, result) {
+    Story.findByIdAndUpdate(req.params.id, JSON.parse(req.body), function(err, result) {
       sender.putResponse(req.params.id, res, err, result, next);
     })
 }

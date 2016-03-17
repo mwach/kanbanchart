@@ -11,8 +11,11 @@ wagner.invoke(function(responseHelper) {
 
 exports.createTask = function(req, res, next) {
 
-	var taskModel = new Task(req.body);
-
+	if((typeof req.body) == 'string'){
+		var taskModel = new Task(JSON.parse(req.body));
+	}else{
+		var taskModel = new Task(req.body);
+	}
 	taskModel.save(function(err, result) {
     sender.postResponse(res, err, result, next);
 	})
@@ -20,8 +23,13 @@ exports.createTask = function(req, res, next) {
 
 exports.updateTask = function(req, res, next) {
 
-	var updatedTaskModel = new Task(req.body);
-	Task.findByIdAndUpdate(req.params.id, updatedTaskModel, function(err, result) {
+  if((typeof req.body) == 'string'){
+    var taskModel = JSON.parse(req.body);
+  }else{
+    var taskModel = req.body;
+  }
+
+	Task.findByIdAndUpdate(req.params.id, taskModel, function(err, result) {
     sender.putResponse(req.params.id, res, err, result, next);
     })
 }

@@ -1,4 +1,5 @@
 require('../models/product');
+require('../models/sprint');
 require('../models/counter');
 require('../models/story');
 require('../models/task');
@@ -16,6 +17,7 @@ mongoose.connect(cfg.mongo_url, {
 });
 
 Product = mongoose.model("Product");
+Sprint = mongoose.model("Sprint");
 Counter = mongoose.model("Counter");
 Story = mongoose.model("Story");
 Task = mongoose.model("Task");
@@ -23,15 +25,18 @@ User = mongoose.model("User");
 
 mongoose.connection.collections['products'].drop(function(err) {
   console.log('products dropped');
-  mongoose.connection.collections['stories'].drop(function(err) {
-    console.log('stories dropped');
-    mongoose.connection.collections['tasks'].drop(function(err) {
-      console.log('tasks dropped');
-      mongoose.connection.collections['counters'].drop(function(err) {
-        console.log('counters dropped');
-        mongoose.connection.collections['users'].drop(function(err) {
-          console.log('users dropped');
-          saveProduct();
+  mongoose.connection.collections['sprints'].drop(function(err) {
+    console.log('sprints dropped');
+    mongoose.connection.collections['stories'].drop(function(err) {
+      console.log('stories dropped');
+      mongoose.connection.collections['tasks'].drop(function(err) {
+        console.log('tasks dropped');
+        mongoose.connection.collections['counters'].drop(function(err) {
+          console.log('counters dropped');
+          mongoose.connection.collections['users'].drop(function(err) {
+            console.log('users dropped');
+            saveProduct();
+          });
         });
       });
     });
@@ -45,24 +50,17 @@ function saveProduct() {
     code : 'TST',
     name : 'Test product',
     description : 'Test product',
-    sprints : [ {
-      startDate : '2016-03-01',
-      endDate : '2016-03-31'
-    } ]
   });
 
   productReq.save(function(err, productRes) {
 
     product = productRes;
     console.log('Product saved');
-    productId = product.id;
-    sprintId = product.sprints[0].id;
-    saveCounter(productId, sprintId);
+    saveCounter();
   });
-
 }
 
-function saveCounter(productId, sprintId) {
+function saveCounter() {
 
   var counter = new Counter({
     _id : 'taskid',
@@ -70,28 +68,58 @@ function saveCounter(productId, sprintId) {
   });
   counter.save(function(err, task) {
     console.log('Counter saved');
-    saveTasks();
+    saveStory();
   });
 
-  function saveTasks() {
+  function saveStory() {
+    var story1 = new Story({
+      product : product.id,
+      title : 'First story',
+    });
+    story1.save(function(err, story) {
+      console.log('Story saved');
+      saveSprint(story.id);
+    });
+  }
+
+  function saveSprint(storyId) {
+
+    var sprint = new Sprint({
+      product: product.id,
+      startDate : '2016-03-01',
+      endDate : '2016-03-31',
+      stories: [storyId]
+    });
+        sprint.save(function(err, result) {
+
+          product.sprints.push(result.id);
+          product.save(function(err, result){
+            saveTasks(storyId);
+          });
+    });
+  }
+
+  function saveTasks(storyId) {
     var task1 = new Task({
-      title : "Something does not work",
-      status : "inprogress",
-      type : "bug",
+      story: storyId,
+      title : "Lets improve something",
+      status : "todo",
+      type : "Enhancement",
       estimate : "5",
       created : "2015-04-04",
-      priority : "LOW",
+      priority : "Low",
       creator : "Marcin Wachowiak",
       assignee : "Wachowiak Marcin"
     });
 
     var task2 = new Task({
+      story: storyId,
       title : "Something does not work",
       status : "inprogress",
-      type : "bug",
+      type : "Bug",
       estimate : "5",
       created : "2015-04-04",
-      priority : "LOW",
+      priority : "Low",
       creator : "Marcin Wachowiak",
       assignee : "Wachowiak Marcin"
     });
@@ -100,21 +128,8 @@ function saveCounter(productId, sprintId) {
       console.log('Task1 saved');
       task2.save(function(err, task) {
         console.log('Task2 saved');
-        saveStory(task1, task2);
+        saveUser();
       });
-    });
-  }
-
-  function saveStory(task1, task2) {
-    var story1 = new Story({
-      sprint : sprintId,
-      product : productId,
-      title : 'First story',
-      tasks : [ task1, task2 ]
-    });
-    story1.save(function(err, story) {
-      console.log('Story saved');
-      saveUser();
     });
   }
 
@@ -122,11 +137,12 @@ function saveCounter(productId, sprintId) {
     var user = new User({
       name : 'Marcin',
       surname : 'Wachowiak',
-      products : [product]
+      products : [ product ]
     });
     user.save(function(err, user) {
       console.log('User saved');
       mongoose.connection.close();
     });
   }
+
 }

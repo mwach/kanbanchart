@@ -11,6 +11,12 @@ config_prod.environment = 'debug'
 module.exports = function() {
 
   console.log('env: ' + process.env.NODE_ENV);
+
+  if(!process.env.NODE_ENV){
+    console.log("NODE_ENV not set. Use it with 'production' or 'development'. Example:");
+    console.log("export NODE_ENV='production'");
+    process.exit(1);
+  }
   switch (process.env.NODE_ENV) {
   case 'development':
     return config_dev;

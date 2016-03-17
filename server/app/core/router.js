@@ -17,30 +17,39 @@ fs.readdirSync(controllers_path).forEach(
 		})
 
 var server = restify.createServer();
+server.use(restify.queryParser());
 
 server.use(restify.fullResponse()).use(restify.bodyParser())
 
-server.get("/", controllers.main.hello )
+server.get("/rest/users/:name", controllers.user.viewUser )
 
-server.get("/users/:name", controllers.user.viewUser )
+server.post("/rest/products", controllers.product.createProduct )
+server.get("/rest/products/:id", controllers.product.viewProduct )
+server.get("/rest/products?code=:code", controllers.product.viewProductByCode )
+server.del("/rest/products/:id", controllers.product.deleteProduct )
+server.put("/rest/products/:id", controllers.product.updateProduct )
 
-server.post("/products", controllers.product.createProduct )
-server.get("/products/:code", controllers.product.viewProduct )
-server.del("/products/:code", controllers.product.deleteProduct )
-server.put("/products/:code", controllers.product.updateProduct )
+server.post("/rest/sprints", controllers.sprint.createSprint)
+server.get("/rest/sprints/:id", controllers.sprint.viewSprint)
+server.put("/rest/sprints/:id", controllers.sprint.updateSprint)
+server.get("/rest/sprints/current/:productId", controllers.sprint.viewCurrentSprintForProduct )
 
-server.post("/sprints", controllers.sprint.createSprint)
-server.get("/sprints/:id", controllers.sprint.viewSprint)
-server.put("/sprints/:id", controllers.sprint.updateSprint)
-server.get("/sprints/current/:productId", controllers.sprint.viewCurrentSprintForProduct )
+server.post("/rest/stories", controllers.story.createStory )
+server.get({path: "/rest/stories/:id"}, controllers.story.viewStory)
+server.put({path: "/rest/stories/:id"}, controllers.story.updateStory)
+server.del({path: "/rest/stories/:id"}, controllers.story.deleteStory)
 
-server.post("/stories", controllers.story.createStory )
-server.get({path: "/stories/:id"}, controllers.story.viewStory)
-server.put({path: "/stories/:id"}, controllers.story.updateStory)
-server.del({path: "/stories/:id"}, controllers.story.deleteStory)
+server.post("/rest/tasks", controllers.task.createTask )
+server.put({path: "/rest/tasks/:id"}, controllers.task.updateTask)
 
-server.post("/tasks", controllers.task.createTask )
-server.put({path: "/tasks/:id"}, controllers.task.updateTask)
+server.get('/', function (req, res, next) {
+    res.redirect('index.html', next);
+});
+
+server.get('/.*', restify.serveStatic({
+  directory: './static'
+}));
+
 
 var port = cfg.server_port || 3000;
 server.listen(port, function(err) {

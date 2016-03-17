@@ -8,19 +8,22 @@ wagner.invoke(function(testclient) {
   client = testclient;
 });
 
+URL_PRODUCTS = '/rest/products';
+URL_SPRINTS = '/rest/sprints';
+URL_STORIES = '/rest/stories';
+
 describe('service: sprint', function() {
 
   var product;
 
   beforeEach(function(done) {
 
-    var code = uuid.v4();
     var request = {
-      code : code,
+      code : uuid.v4(),
       name : 'Sprint product',
       description : 'Sprint product'
     }
-    client.post('/products', request, function(err, req, res, resData) {
+    client.post(URL_PRODUCTS, request, function(err, req, res, resData) {
       product = resData;
       done();
     });
@@ -36,13 +39,13 @@ describe('service: sprint', function() {
             endDate : "2012-03-31"
           };
 
-          client.post('/sprints', sprintData, function(err, req, res, data) {
+          client.post(URL_SPRINTS, sprintData, function(err, req, res, data) {
 
             if (res.statusCode != 201) {
               throw new Error('invalid response from /sprints');
             }
 
-            client.get('/sprints/' + data.id, function(err, req, res,
+            client.get(URL_SPRINTS + '/' + data.id, function(err, req, res,
                 sprintResponse) {
 
               if (res.statusCode != 200) {
@@ -63,8 +66,51 @@ describe('service: sprint', function() {
         });
   });
 
+  describe('create two sprint with different dates and return the current one', function() {
+    it('should create two sprints and then retrieve current one',
+        function(done) {
+
+       var today = new Date();
+      
+       var yesterday = new Date(today);
+       yesterday.setDate(today.getDate() - 1);
+      
+       var weekAgo = new Date(today);
+       weekAgo.setDate(today.getDate() - 7);
+
+          var currentSprintData = {
+            product : product.id,
+            startDate : yesterday,
+            endDate : today
+          };
+          var previousSprintData = {
+              product : product.id,
+              startDate : weekAgo,
+              endDate : yesterday
+            };
+
+          client.post(URL_SPRINTS, currentSprintData, function(err, req, res, currentResponse) {
+
+            client.post(URL_SPRINTS, previousSprintData, function(err, req, res, previousResponse) {
+
+            client.get(URL_SPRINTS + '/current/' + product.id, function(err, req, res,
+                sprintResponse) {
+
+              if (res.statusCode != 200) {
+                throw new Error('invalid response from /sprints/current');
+              }
+              if (sprintResponse.id != currentResponse.id) {
+                throw new Error('invalid response from /sprints');
+              }
+              done();
+            });
+          });
+        });
+    });
+  });
+
   describe('create a sprint with stories', function() {
-    it('should create a sprint and then retrieve it using ID or sprint dates',
+    it('should create a sprint and then add some stories to it',
         function(done) {
 
           var sprintData = {
@@ -73,32 +119,27 @@ describe('service: sprint', function() {
             endDate : "2012-03-31",
           };
 
-          client.post('/sprints', sprintData, function(err, req, res,
+          client.post(URL_SPRINTS, sprintData, function(err, req, res,
               sprintDataResponse) {
-
-            client.get('/sprints/' + sprintDataResponse.id, function(err, req,
-                res, sprintResponse) {
 
               // now, create a story
               var storyOne = {
                 title : 'Some sample title',
                 product : product.id,
-                tasks : []
               };
               var storyTwo = {
                 product : product.id,
                 title : 'Some sample title2',
-                tasks : []
               };
 
-              client.post('/stories', storyOne, function(err, req, res,
+              client.post(URL_STORIES, storyOne, function(err, req, res,
                   storyOneResponse) {
-
+            	  
                 if (res.statusCode != 201) {
                   throw new Error('invalid response from /sprints');
                 }
 
-                client.post('/stories', storyTwo, function(err, req, res,
+                client.post(URL_STORIES, storyTwo, function(err, req, res,
                     storyTwoResponse) {
 
                   if (res.statusCode != 201) {
@@ -108,12 +149,13 @@ describe('service: sprint', function() {
                   sprintDataResponse.stories.push(storyOneResponse.id);
                   sprintDataResponse.stories.push(storyTwoResponse.id);
 
-                  client.put('/sprints/' + sprintResponse.id, sprintDataResponse,
+                  client.put(URL_SPRINTS + '/' + sprintDataResponse.id, sprintDataResponse,
                       function(err, req, res, sprintDataUpd) {
 
-                        client.get('/sprints/' + sprintResponse.id, function(err,
+                        client.get(URL_SPRINTS + '/' + sprintDataResponse.id, function(err,
                             req, res, sprintData) {
-                          if (res.statusCode != 200) {
+
+                        	if (res.statusCode != 200) {
                             throw new Error('invalid response from /sprints');
                           }
                           if (sprintData.stories.length != 2) {
@@ -125,7 +167,6 @@ describe('service: sprint', function() {
                           done();
                         });
                       });
-                });
               });
             });
           });
@@ -142,7 +183,7 @@ describe('service: sprint', function() {
             product : product.id,
           };
 
-          client.post('/stories', storyOne, function(err, req, res,
+          client.post(URL_SPRINTS, storyOne, function(err, req, res,
               storyOneResponse) {
 
             var sprintData = {
@@ -152,15 +193,15 @@ describe('service: sprint', function() {
               stories : [ storyOneResponse.id ]
             };
 
-            client.post('/sprints', sprintData, function(err, req, res,
+            client.post(URL_SPRINTS, sprintData, function(err, req, res,
                 sprintDataResponse) {
 
               sprintDataResponse.stories.shift();
               // delete
-              client.put('/sprints/' + sprintDataResponse.id, sprintDataResponse,
+              client.put(URL_SPRINTS + '/' + sprintDataResponse.id, sprintDataResponse,
                   function(err, req, res, sprintDataUpd) {
 
-                    client.get('/sprints/' + sprintDataResponse.id, function(err,
+                    client.get(URL_SPRINTS + '/' + sprintDataResponse.id, function(err,
                         req, res, sprintData) {
                       
                       if (res.statusCode != 200) {

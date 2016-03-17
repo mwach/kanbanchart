@@ -4,12 +4,13 @@ var Schema = mongoose.Schema;
 Counter = mongoose.model("Counter");
 
 var TaskSchema = Schema({
-	taskId: {type: String},
+  story: {type: Schema.ObjectId, ref: 'Story'},
+	taskId: String,
 	title: {type: String, required: true},
-	status: {type: String, required: true},
+	status: {type: String, default: 'inprogress'},
 	type: {type: String, required: true},
-	estimate: {type: Number, required: true},
-	created: Date,
+	estimate: Number,
+	created: { type: Date, default: Date.now },
 	priority: String,
 	creator: String,
 	assignee: String
@@ -18,7 +19,8 @@ var TaskSchema = Schema({
 TaskSchema.pre('save', function(next) {
     var doc = this;
     Counter.findByIdAndUpdate('taskid', {$inc: { seq: 1} }, function(error, counter){
-    	if(error)
+
+      if(error)
             return next(error);
         doc.taskId = counter.seq;
         next();

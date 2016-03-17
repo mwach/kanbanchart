@@ -62,17 +62,17 @@
 	font-weight: bold;
 }
 
-.bug {
+.Bug {
 	border: 2px solid #aa0000;
 	border-right-width: 15px;
 }
 
-.story {
+.Story {
 	border: 2px solid #00aa00;
 	border-right-width: 15px;
 }
 
-.enhancement {
+.Enhancement {
 	border: 2px solid #0000aa;
 	border-right-width: 15px;
 }

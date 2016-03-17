@@ -20,6 +20,13 @@ exports.createProduct = function(req, res, next) {
 
 exports.viewProduct = function(req, res, next) {
 
+  Product.findById(req.params.id).exec( function(err, result) {
+    sender.putResponse(req.params.id, res, err, result, next);
+    })
+}
+
+exports.viewProductByCode = function(req, res, next) {
+
   Product.findOne({
     code : req.params.code
   }).exec(function(err, result) {
@@ -29,17 +36,15 @@ exports.viewProduct = function(req, res, next) {
 
 exports.deleteProduct = function(req, res, next) {
 
-  Product.find({
-    code : req.params.code
-  }).remove().exec(function(err, result) {
-    sender.putResponse(req.params.code, res, err, result, next);
-  })
+  Product.findByIdAndRemove(req.params.id, function(err, result) {
+    sender.putResponse(req.params.id, res, err, result, next);
+   })
 }
 
 exports.updateProduct = function(req, res, next) {
 
   var query = {
-    code : req.params.code
+    _id : req.params.id
   };
   var updatedData = {
     name : req.body.name,

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="My kanban chart">
+<meta name="author" content="Marcin Wachowiak">
+<link rel="icon" href="resources/img/favicon.ico">
+
+<title>Kanban chart</title>
+
+
+<!-- 
+<link rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+  integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+  crossorigin="anonymous">
+
+<link rel="stylesheet" href="resources/css/base.css" />
+
+<script
+  src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script
+  src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+  integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+  crossorigin="anonymous"></script>
+
+<link rel="stylesheet"
+  href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+ -->
+<link rel="stylesheet" href="resources/css/bootstrap.min.css">
+<link rel="stylesheet" href="resources/css/base.css" />
+
+<script src="resources/js/jquery.min.js"></script>
+<script src="resources/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="resources/css/jquery-ui.css">
+<script src="resources/js/jquery-ui.js"></script>
+<script src="resources/js/rest.js"></script>
+<script src="resources/js/base.js"></script>
+
+</head>
+<body class="body">
+
+	<div class="container">
+
+		<div class="row">
+			<button id="btn-new-task" type="button"
+				class="btn btn-primary pull-right">New task</button>
+		</div>
+		<div class="row">
+			<div class="col-xs-3 row-title">Tasks</div>
+			<div class="col-xs-3 row-title">In progress</div>
+			<div class="col-xs-3 row-title">To verify</div>
+			<div class="col-xs-3 row-title">Done</div>
+		</div>
+
+		<div id="content"></div>
+
+
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title row-title" id="myModalLabel">Task details</h4>
+				</div>
+				<form id="form-task" method="post" role="form"
+					class="form-horizontal" target="#">
+                    <div id="dialog-task-notifier"></div>
+					<div id="form-div-task-id" class="form-group task-details-hidden">
+						<label for="form-task-id" class="col-sm-2 control-label">Id</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control" id="form-task-id"
+								placeholder="Task Id" maxlength="200" disabled="disabled" >
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="form-task-title" class="col-sm-2 control-label">Title</label>
+						<div class="col-sm-8">
+							<input type="text" class="form-control" id="form-task-title"
+								placeholder="Task title" maxlength="200" required="required" >
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="form-task-type" class="col-sm-2 control-label">Type</label> 
+						<div class="col-sm-8">
+						<input
+							id="form-task-type" class="form-control" list="form-task-types"
+							required="required" placeholder="Type" />
+						<datalist id="form-task-types">
+							<option value="Bug">
+							<option value="Enhancement">
+							<option value="Story">
+						</datalist>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="form-task-estimate" class="col-sm-2 control-label">Estimate</label> 
+						<div class="col-sm-8">
+						<input
+							type="number" class="form-control" id="form-task-estimate"
+							placeholder="Estimate" min="1" max="100" />
+							</div>
+					</div>
+
+					<div class="form-group">
+						<label for="form-task-priority" class="col-sm-2 control-label">Priority</label> 
+						<div class="col-sm-8">
+						<input
+							id="form-task-priority" class="form-control" list="form-task-priorities" placeholder="Priority"/>
+						<datalist id="form-task-priorities">
+							<option value="Low">
+							<option value="Medium">
+							<option value="High">
+							<option value="Critical">
+						</datalist>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="form-task-assingee" class="col-sm-2 control-label">Assignee</label> 
+						<div class="col-sm-8">
+						
+						<input
+							id="form-task-assignee" class="form-control" list="form-task-assignees" placeholder="Assignee"/>
+						<datalist id="form-task-assignees">
+							<option value="Jon Doe">
+							<option value="Marcin Wachowiak">
+						</datalist>
+					</div>
+				</div>
+
+					<div class="form-group">
+						<label for="form-task-story" class="col-sm-2 control-label">Story</label> 
+						<div class="col-sm-8">
+						<input
+							id="form-task-story" class="form-control" list="form-task-stories" placeholder="Stories" required="required"/>
+						<datalist id="form-task-stories">
+						</datalist>
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-primary">Save</button>
+					<button id="btn-task-close" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
