@@ -41,6 +41,7 @@ server.del({path: "/rest/stories/:id"}, controllers.story.deleteStory)
 
 server.post("/rest/tasks", controllers.task.createTask )
 server.put({path: "/rest/tasks/:id"}, controllers.task.updateTask)
+server.get({path: "/rest/tasks/:id"}, controllers.task.viewTask)
 
 server.get('/', function (req, res, next) {
     res.redirect('index.html', next);

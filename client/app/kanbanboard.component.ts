@@ -45,6 +45,7 @@ export class KanbanBoardComponent implements OnInit {
     this.tasks.forEach((task: Task) => {
       if (task.id == destination_task.id){
       	task.status=destination_col.id;
+      	this._userService.updateTask(task);
       }
     });
     

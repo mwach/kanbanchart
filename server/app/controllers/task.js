@@ -21,6 +21,14 @@ exports.createTask = function(req, res, next) {
 	})
 }
 
+
+exports.viewTask = function(req, res, next) {
+
+	Task.findById(req.params.id).exec( function(err, result) {
+	    sender.putResponse(req.params.id, res, err, result, next);
+	})
+}
+
 exports.updateTask = function(req, res, next) {
 
   if((typeof req.body) == 'string'){
@@ -28,6 +36,7 @@ exports.updateTask = function(req, res, next) {
   }else{
     var taskModel = req.body;
   }
+  delete taskModel._id
 
 	Task.findByIdAndUpdate(req.params.id, taskModel, function(err, result) {
     sender.putResponse(req.params.id, res, err, result, next);
