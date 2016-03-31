@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base href="/">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="My kanban chart">
+<meta name="author" content="Marcin Wachowiak">
+<link rel="icon" href="resources/img/favicon.ico">
+
+<title>Kanban chart</title>
+
+	<link rel="stylesheet" href="resources/css/bootstrap.min.css">
+	<link rel="stylesheet" href="resources/css/base.css" />
+	<link rel="stylesheet" href="resources/css/base.css" />
+
+	<script src="resources/js/jquery.min.js"></script>
+	<script src="resources/js/bootstrap.min.js"></script>
+
+	<link rel="stylesheet" href="resources/css/jquery-ui.css">
+	<script src="resources/js/jquery-ui.js"></script>
+	<script src="resources/js/rest.js"></script>
+	<script src="resources/js/base.js"></script>
+
+    <!-- IE required polyfills, in this exact order -->
+    <script src="node_modules/es6-shim/es6-shim.min.js"></script>
+    <script src="node_modules/systemjs/dist/system-polyfills.js"></script>
+    <script src="node_modules/angular2/es6/dev/src/testing/shims_for_IE.js"></script>   
+    <script src="node_modules/angular2/bundles/angular2-polyfills.js"></script>
+    <script src="node_modules/systemjs/dist/system.src.js"></script>
+    <script src="node_modules/typescript/lib/typescript.js"></script>
+    <script src="node_modules/rxjs/bundles/Rx.js"></script>
+    <script src="node_modules/angular2/bundles/angular2.dev.js"></script>
+    <script src="node_modules/angular2/bundles/router.dev.js"></script> 
+
+<script src="node_modules/ng2-dragula/bundles/ng2-dragula.js"></script>
+
+ 
+    <script>
+      System.config({
+        transpiler: 'typescript', 
+        typescriptOptions: { emitDecoratorMetadata: true }, 
+        packages: {'app': {defaultExtension: 'ts'}},
+        map: {
+          'dragula':'node_modules/dragula/dist/dragula.min.js'
+        }
+      });
+      System.import('./app/main')
+            .then(null, console.error.bind(console));
+    </script>
+  </head>
+
+  <body class="body">
+    <kanban-board>Loading...</kanban-board>
+  </body>
+</html>

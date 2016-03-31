@@ -42,3 +42,9 @@ http://127.0.0.1:8080/debug?port=5858
 run client:
 
 http://127.0.0.1:3000/
+
+
+
+In case of problems:
+
+http://stackoverflow.com/questions/34399445/angular-2-quickstart-live-server-error

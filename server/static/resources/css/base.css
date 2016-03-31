@@ -81,10 +81,7 @@
 	font-weight: bold;
 }
 
-.task-details-hidden{
-	display: none;
-}
-.task-details-visible{
+.task-details{
 	display: block;
 	font-size: small;
 }

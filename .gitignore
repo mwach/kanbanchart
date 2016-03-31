@@ -3,3 +3,4 @@
 **/node_modules/**
 .pydevproject
 npm-debug.log
+**/*.js.map

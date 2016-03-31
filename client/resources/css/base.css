@@ -1,0 +1,98 @@
+.body {
+	background-color: #ffffff;
+}
+
+.row-title {
+	margin-top: 20px;
+	vertical-align: middle;
+	border: 2px solid #75bbfd;
+	padding: 15px;
+	text-align: center;
+	font-weight: bold;
+}
+
+.tasks-column {
+	border: 3px solid #cccccc;
+	background-color: #f9f9f9;
+	padding: 5px;
+}
+
+.row-eq-height {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+}
+
+.story-definition {
+	margin-top: 20px;
+	border-top: 1px solid #75bbfd;
+	border-left: 1px solid #75bbfd;
+	border-right: 1px solid #75bbfd;
+	padding: 10px;
+	text-align: center;
+	font-weight: bold;
+}
+
+.task {
+	background-color: #fff;
+	margin: 5px;
+	margin-bottom: 10px;
+	padding: 5px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 5px;
+}
+
+.Bug {
+	border: 2px solid #aa0000;
+	border-right-width: 15px;
+}
+
+.Story {
+	border: 2px solid #00aa00;
+	border-right-width: 15px;
+}
+
+.Enhancement {
+	border: 2px solid #0000aa;
+	border-right-width: 15px;
+}
+
+.task-title {
+	font-weight: bold;
+}
+
+td {
+	padding: 3px;
+}
+
+.table-task-details {
+	font-size: x-small;
+}
+
+.gu-mirror {
+	cursor: move;
+	position: fixed;
+	z-index: 2;
+	opacity: .8;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
+	filter: alpha(opacity = 80);
+}
+
+.gu-hide {
+	display: none;
+}
+
+.gu-unselectable {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+.gu-transit {
+	display: block;
+	opacity: .2;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+	filter: alpha(opacity = 20);
+}

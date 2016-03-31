@@ -1,0 +1,33 @@
+<div class="task {{task.type}}" (click)="showDetails()">
+	<p class="task-title">
+		<a href="#">#{{task.id}}</a>
+	</p>
+	<p class="task-estimate">{{task.title}}</p>
+	<div class="task-details" [hidden]="hiddenDetails">
+		<table
+			class="table-responsive table-striped table-bordered table-small table-task-details">
+			<tbody>
+				<tr>
+					<td>Estimate</td>
+					<td>{{task.estimate}}</td>
+				</tr>
+				<tr>
+					<td>Priority</td>
+					<td>{{task.priority}}</td>
+				</tr>
+				<tr>
+					<td>Created</td>
+					<td>2016-03-16T20:33:37.679Z</td>
+				</tr>
+				<tr>
+					<td>Creator</td>
+					<td>{{task.creator}}</td>
+				</tr>
+				<tr>
+					<td>Asignee</td>
+					<td>{{task.asignee}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
