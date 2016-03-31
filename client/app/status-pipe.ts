@@ -1,5 +1,5 @@
 import {Pipe, PipeTransform} from 'angular2/core';
-import {Task} from './task';
+import {Task} from './model/task';
 
 
 @Pipe({name: 'statusFilter'})

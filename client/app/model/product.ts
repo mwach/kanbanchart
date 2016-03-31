@@ -1,4 +1,4 @@
-import {Sprint} from ./sprint;
+import {Sprint} from './sprint';
 
 export interface Product{
 	id: number;

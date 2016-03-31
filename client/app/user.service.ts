@@ -1,5 +1,6 @@
 import {Injectable} from 'angular2/core';
-import {Task} from './task';
+import {Task} from './model/task';
+import {User} from './model/user';
 import {Http, Response} from 'angular2/http';
 import 'rxjs/Rx';
 

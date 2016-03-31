@@ -3,7 +3,7 @@ import { Router } from 'angular2/router';
 
 import { UserService } from './user.service';
 
-import { Task } from './task';
+import { Task } from './model/task';
 import { StatusPipe } from './status-pipe';
 
 import { TaskDetails } from './task-details';
@@ -33,14 +33,11 @@ export class KanbanBoardComponent implements OnInit {
     });
   };
  
-  productId: string;
   ngOnInit() {
 
       this._userService.getUser()
       .then(productId =>       this._userService.getTasks(productId)
-      .then(tasks => this.tasks = tasks);
-);
-
+      .then(tasks => this.tasks = tasks));
   }
 
 
