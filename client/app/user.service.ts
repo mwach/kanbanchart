@@ -1,5 +1,6 @@
 import {Injectable} from 'angular2/core';
 import {Task} from './model/task';
+import {Story} from './model/stories';
 import {User} from './model/user';
 import {Http, Response} from 'angular2/http';
 import 'rxjs/Rx';
@@ -17,14 +18,13 @@ export class UserService {
   getUser() {
     return this._http.get(this._userUrl).toPromise()
                   .then(res => <User> res.json().products[0].id, this.handleError)
-                  .then(data => { console.log(data); return data; });
+                  .then(data => return data );
   }
 
-  getTasks(productId) {
-  
-    return this._http.get(this._tasksUrl + productId).toPromise()
-                  .then(res => <Task[]> res.json().stories[0].tasks, this.handleError)
-                  .then(data => { console.log(data); return data; });
+  getStories(productId) {
+      return this._http.get(this._tasksUrl + productId).toPromise()
+                  .then(res => <Story[]> res.json().stories, this.handleError)
+                  .then(data => return data );
   }
 
   updateTask(task: Task) {

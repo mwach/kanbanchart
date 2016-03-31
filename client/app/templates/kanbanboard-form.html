@@ -9,25 +9,25 @@
 		<div class="col-xs-3 row-title">To verify</div>
 		<div class="col-xs-3 row-title">Done</div>
 	</div>
-	<div id="content">
+	<story-definition *ngFor="#story of stories" [data]="story">
 
-		<div class="row" id="story-56e86fac1243c92c37dfb335">
-			<div class="col-xs-12 story-definition">First story</div>
+		<div class="row">
+			<div class="col-xs-12 story-definition">{{story.title}}</div>
 		</div>
 
 		<div class="row row-eq-height">
 			<div class="col-xs-3 tasks-column" [dragula]='"first-story"' id="todo">
-				<task-details *ngFor="#task of (tasks | statusFilter:'todo')" [task]="task" id={{task.id}}></task-details>
+				<task-details *ngFor="#task of (story.tasks | statusFilter:'todo')" [task]="task" id={{task.id}}></task-details>
 			</div>
 			<div class="col-xs-3 tasks-column" [dragula]='"first-story"' id="inprogress">
-				<task-details *ngFor="#task of (tasks | statusFilter:'inprogress')" [task]="task" id={{task.id}}></task-details>
+				<task-details *ngFor="#task of (story.tasks | statusFilter:'inprogress')" [task]="task" id={{task.id}}></task-details>
 			</div>
 			<div class="col-xs-3 tasks-column" [dragula]='"first-story"' id="toverify">
-				<task-details *ngFor="#task of (tasks | statusFilter:'toverify')" [task]="task" id={{task.id}}></task-details>
+				<task-details *ngFor="#task of (story.tasks | statusFilter:'toverify')" [task]="task" id={{task.id}}></task-details>
 			</div>
 			<div class="col-xs-3 tasks-column" [dragula]='"first-story"' id="done">
-				<task-details *ngFor="#task of (tasks | statusFilter:'done')" [task]="task" id={{task.id}}></task-details>
+				<task-details *ngFor="#task of (story.tasks | statusFilter:'done')" [task]="task" id={{task.id}}></task-details>
 			</div>
 		</div>
-	</div>
+	</story-definition>
 </div>

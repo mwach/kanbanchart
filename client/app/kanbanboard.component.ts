@@ -4,6 +4,8 @@ import { Router } from 'angular2/router';
 import { UserService } from './user.service';
 
 import { Task } from './model/task';
+import { Story } from './model/story';
+
 import { StatusPipe } from './status-pipe';
 
 import { TaskDetails } from './task-details';
@@ -21,6 +23,8 @@ import {DragulaService, Dragula} from 'ng2-dragula';
 
 export class KanbanBoardComponent implements OnInit {
 
+  stories: Story[] = [];
+  story: Story;
   tasks: Task[] = [];
 
   constructor(
@@ -36,8 +40,8 @@ export class KanbanBoardComponent implements OnInit {
   ngOnInit() {
 
       this._userService.getUser()
-      .then(productId =>       this._userService.getTasks(productId)
-      .then(tasks => this.tasks = tasks));
+      .then(productId =>       this._userService.getStories(productId)
+      .then(stories => {this.stories = stories; this.tasks = stories[0].tasks;}));
   }
 
 
