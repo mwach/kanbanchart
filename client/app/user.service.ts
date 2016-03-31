@@ -9,21 +9,17 @@ export class UserService {
   private _tasksUrl = 'http://localhost:3000/rest/sprints/current/56e954afdb2a7f35144999d9';  // URL to web api
   private _tasks = 'http://localhost:3000/rest/tasks/';  // URL to web api
 
-
-
-  constructor (private http: Http) {}
-
-
+  constructor (private _http: Http) {}
 
   getTasks() {
-    return this.http.get(this._tasksUrl).toPromise()
+    return this._http.get(this._tasksUrl).toPromise()
                   .then(res => <Task[]> res.json().stories[0].tasks, this.handleError)
                   .then(data => { console.log(data); return data; });
   }
 
   updateTask(task: Task) {
     console.log('updating task');
-    this.http.put(this._tasks + task.id, JSON.stringify(task))
+    this._http.put(this._tasks + task.id, JSON.stringify(task))
     .map(res => res.json())
     .subscribe(
       data => console.log(data),
