@@ -6,13 +6,22 @@ import 'rxjs/Rx';
 @Injectable()
 export class UserService {
 
-  private _tasksUrl = 'http://localhost:3000/rest/sprints/current/56e954afdb2a7f35144999d9';  // URL to web api
+  private _userUrl = 'http://localhost:3000/rest/users/Marcin';  // URL to web api
+
+  private _tasksUrl = 'http://localhost:3000/rest/sprints/current/';  // URL to web api
   private _tasks = 'http://localhost:3000/rest/tasks/';  // URL to web api
 
   constructor (private _http: Http) {}
 
-  getTasks() {
-    return this._http.get(this._tasksUrl).toPromise()
+  getUser() {
+    return this._http.get(this._userUrl).toPromise()
+                  .then(res => <User> res.json().products[0].id, this.handleError)
+                  .then(data => { console.log(data); return data; });
+  }
+
+  getTasks(productId) {
+  
+    return this._http.get(this._tasksUrl + productId).toPromise()
                   .then(res => <Task[]> res.json().stories[0].tasks, this.handleError)
                   .then(data => { console.log(data); return data; });
   }

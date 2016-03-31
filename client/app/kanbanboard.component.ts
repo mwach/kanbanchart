@@ -33,9 +33,14 @@ export class KanbanBoardComponent implements OnInit {
     });
   };
  
+  productId: string;
   ngOnInit() {
-      this._userService.getTasks()
+
+      this._userService.getUser()
+      .then(productId =>       this._userService.getTasks(productId)
       .then(tasks => this.tasks = tasks);
+);
+
   }
 
 
