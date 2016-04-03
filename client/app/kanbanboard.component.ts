@@ -11,12 +11,13 @@ import { StatusPipe } from './status-pipe';
 import { TaskDetails } from './task-details';
 
 import {DragulaService, Dragula} from 'ng2-dragula';
+import { MODAL_DIRECTIVES } from 'ng2-bs3-modal/ng2-bs3-modal';
 
 
 @Component({
   templateUrl: 'app/templates/kanbanboard-form.html',
   pipes: [StatusPipe],
-  directives: [TaskDetails, Dragula],
+  directives: [TaskDetails, Dragula, MODAL_DIRECTIVES],
   viewProviders: [DragulaService]
 })
 
