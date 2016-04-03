@@ -1,4 +1,5 @@
 var wagner = require('wagner-core');
+var errors = require('restify-errors');
 
 var Sprint;
 var Task;
@@ -57,10 +58,23 @@ exports.viewCurrentSprintForProduct = function(req, res, next) {
     'endDate': {'$gte': currDateEnd}
   }).populate('stories').lean().exec(function(err, result) {
 
+    if(result == null){
+      res.send(new errors.NotFoundError('no sprint matching criteria'));      
+    }
+    if(err){
+      console.log(err);
+      next(err);
+    }
 	result.id = result._id;
     var ids = result.stories.map(function(obj){ return obj._id; });
 
     Task.find({story: {$in: ids}}).lean().exec(function(err, tasks){
+
+      console.log(tasks);
+      if(err){
+        console.log(err);
+        next(err);
+      }
 
       result.stories.forEach(function(story) {
     	story.id = story._id;

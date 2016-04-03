@@ -18,13 +18,13 @@ export class UserService {
   getUser() {
     return this._http.get(this._userUrl).toPromise()
                   .then(res => <User> res.json().products[0].id, this.handleError)
-                  .then(data => return data );
+                  .then(data => {return data;} );
   }
 
   getStories(productId) {
       return this._http.get(this._tasksUrl + productId).toPromise()
                   .then(res => <Story[]> res.json().stories, this.handleError)
-                  .then(data => return data );
+                  .then(data => {return data;} );
   }
 
   updateTask(task: Task) {
