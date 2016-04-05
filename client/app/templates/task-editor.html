@@ -4,11 +4,71 @@
 	</div>
 
   <modal #modal>
+    <form [ngFormModel]="form" class="form-horizontal">
+
     <modal-header [show-close]="true">
-        <h4 class="modal-title">I'm a modal!</h4>
+        <h4 class="modal-title">Task details</h4>
     </modal-header>
     <modal-body>
-        Hello World!
+
+		<div class="form-group">
+			<label for="form-task-title" class="col-sm-2 control-label">Title</label>
+			<div class="col-sm-8">
+				<input type="text" ngControl="title" class="form-control" 
+					placeholder="Task title" maxlength="200" >
+            <span class="errorMessage" *ngIf="!title.valid">*</span>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label for="form-task-type" class="col-sm-2 control-label">Type</label> 
+			<div class="col-sm-8">
+
+  			  <select class="form-control" ngControl="type" placeholder="Type">
+ 			    <option *ngFor="#t of types" [value]="t">{{t}}</option>
+			  </select>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label for="form-task-estimate" class="col-sm-2 control-label">Estimate</label> 
+			<div class="col-sm-8">
+			<input
+				type="number" class="form-control" ngControl="estimate" 
+				placeholder="Estimate" min="1" max="100" />
+				</div>
+		</div>
+
+		<div class="form-group">
+			<label for="form-task-priority" class="col-sm-2 control-label">Priority</label> 
+			<div class="col-sm-8">
+  			  <select class="form-control" ngControl="priority" placeholder="Priority">
+ 			    <option *ngFor="#p of priorities" [value]="p">{{p}}</option>
+			  </select>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label for="form-task-assingee" class="col-sm-2 control-label">Assignee</label> 
+			<div class="col-sm-8">
+  			  <select class="form-control" ngControl="assignee" placeholder="Assignee">
+ 			    <option *ngFor="#a of assignees" [value]="a">{{a}}</option>
+			  </select>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label for="form-task-story" class="col-sm-2 control-label">Story</label> 
+			<div class="col-sm-8">
+  			  <select class="form-control" ngControl="story" placeholder="Story">
+ 			    <option *ngFor="#s of stories" [value]="s">{{s}}</option>
+			  </select>
+		</div>
+	</div>
+
     </modal-body>
-    <modal-footer [show-default-buttons]="true"></modal-footer>
+    <modal-footer>
+			<button (click)="submitData()" [disabled]="!form.valid" class="btn btn-primary">Sumbit data</button>    
+    </modal-footer>
+    </form>
   </modal>
