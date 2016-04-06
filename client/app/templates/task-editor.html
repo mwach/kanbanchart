@@ -14,9 +14,8 @@
 		<div class="form-group">
 			<label for="form-task-title" class="col-sm-2 control-label">Title</label>
 			<div class="col-sm-8">
-				<input type="text" ngControl="title" class="form-control" 
+				<input type="text" ngControl="title" class="form-control" [class.red-border]="!title.valid" 
 					placeholder="Task title" maxlength="200" >
-            <span class="errorMessage" *ngIf="!title.valid">*</span>
 			</div>
 		</div>
 
@@ -24,7 +23,7 @@
 			<label for="form-task-type" class="col-sm-2 control-label">Type</label> 
 			<div class="col-sm-8">
 
-  			  <select class="form-control" ngControl="type" placeholder="Type">
+  			  <select class="form-control" ngControl="type" placeholder="Type" [class.red-border]="!type.valid">
  			    <option *ngFor="#t of types" [value]="t">{{t}}</option>
 			  </select>
 			</div>

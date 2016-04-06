@@ -100,3 +100,7 @@ td {
 .errorMessage{
 	color: red;
 }
+
+.red-border{
+	border-color: red;
+}

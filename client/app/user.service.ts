@@ -11,7 +11,7 @@ export class UserService {
   private _userUrl = 'http://localhost:3000/rest/users/Marcin';  // URL to web api
 
   private _tasksUrl = 'http://localhost:3000/rest/sprints/current/';  // URL to web api
-  private _tasks = 'http://localhost:3000/rest/tasks/';  // URL to web api
+  private _tasks = 'http://localhost:3000/rest/tasks';  // URL to web api
 
   constructor (private _http: Http) {}
 
@@ -29,7 +29,18 @@ export class UserService {
 
   updateTask(task: Task) {
     console.log('updating task');
-    this._http.put(this._tasks + task.id, JSON.stringify(task))
+    this._http.put(this._tasks + '/' + task.id, JSON.stringify(task))
+    .map(res => res.json())
+    .subscribe(
+      data => console.log(data),
+      err => this.handleError(err),
+      () => console.log('Authentication Complete')
+    );
+  }
+
+  addTask(task: Task) {
+    console.log('adding task: ' + JSON.stringify(task));
+    this._http.post(this._tasks, JSON.stringify(task))
     .map(res => res.json())
     .subscribe(
       data => console.log(data),
@@ -41,7 +52,7 @@ export class UserService {
 
 private handleError (error: any) {
   console.error(error);
-  return Promise.reject(error.message || error.json().error || 'Server error');
+//  return Promise.reject(error.message || error.json().error || 'Server error');
 }
 
 }

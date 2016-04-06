@@ -70,7 +70,6 @@ exports.viewCurrentSprintForProduct = function(req, res, next) {
 
     Task.find({story: {$in: ids}}).lean().exec(function(err, tasks){
 
-      console.log(tasks);
       if(err){
         console.log(err);
         next(err);

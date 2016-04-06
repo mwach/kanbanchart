@@ -1,8 +1,9 @@
 export interface Task{
 	id: number;
 	title: string;
-	status: string;
-	asignee: string;
 	type: string;
+	estimate: number;
 	priority: string;
+	asignee: string;
+	status: string;
 }
