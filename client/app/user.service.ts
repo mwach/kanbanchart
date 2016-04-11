@@ -28,25 +28,18 @@ export class UserService {
   }
 
   updateTask(task: Task) {
-    console.log('updating task');
     this._http.put(this._tasks + '/' + task.id, JSON.stringify(task))
     .map(res => res.json())
     .subscribe(
       data => console.log(data),
       err => this.handleError(err),
-      () => console.log('Authentication Complete')
+      () => console.log('Update completed')
     );
   }
 
   addTask(task: Task) {
-    console.log('adding task: ' + JSON.stringify(task));
-    this._http.post(this._tasks, JSON.stringify(task))
-    .map(res => res.json())
-    .subscribe(
-      data => console.log(data),
-      err => this.handleError(err),
-      () => console.log('Authentication Complete')
-    );
+    return this._http.post(this._tasks, JSON.stringify(task))
+    .map(res => res.json());
   }
 
 

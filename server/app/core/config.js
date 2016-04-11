@@ -15,7 +15,9 @@ module.exports = function() {
   if(!process.env.NODE_ENV){
     console.log("NODE_ENV not set. Use it with 'production' or 'development'. Example:");
     console.log("export NODE_ENV='production'");
-    process.exit(1);
+    console.log("NODE_ENV will be set to 'production'");
+    //process.exit(1);
+    process.env.NODE_ENV = 'production';
   }
   switch (process.env.NODE_ENV) {
   case 'development':

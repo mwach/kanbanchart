@@ -27,7 +27,6 @@ export class KanbanBoardComponent implements OnInit {
 
   stories: Story[] = [];
   story: Story;
-  tasks: Task[] = [];
 
   constructor(
     private _router: Router,
@@ -43,18 +42,20 @@ export class KanbanBoardComponent implements OnInit {
 
       this._userService.getUser()
       .then(productId =>       this._userService.getStories(productId)
-      .then(stories => {this.stories = stories; this.tasks = stories[0].tasks;}));
+      .then(stories => { this.stories = stories; }));
   }
 
 
   private onDrop(args) {
     let [source_task, destination_task, destination_col, source_col] = args;
-    
-    this.tasks.forEach((task: Task) => {
-      if (task.id == destination_task.id){
-      	task.status=destination_col.id;
-      	this._userService.updateTask(task);
-      }
+
+    this.stories.forEach((story: Story) => {
+        story.tasks.forEach((task: Task) => {
+          if (task.id == destination_task.id){
+      	    task.status=destination_col.id;
+      	    this._userService.updateTask(task);
+          }
+        });
     });
   }
 }

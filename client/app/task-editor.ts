@@ -39,6 +39,9 @@ export class TaskEditor {
 	story: Control;
 	estimate: Control;
 
+    submitted = false;
+    status = "";
+    
     types: string[] = ['Bug', 'Enhancement', 'Story'];
     priorities: string[] = ['Low', 'Medium', 'High', 'Critical'];
 	assignees: string[] = ['Marcin Wachowiak', 'Joe Doe'];
@@ -53,13 +56,14 @@ export class TaskEditor {
 //			Validators.compose([Validators.required, UsernameValidator.startsWithNumber])
 			Validators.required
 		);
-		this.type = new Control(this.types[0], Validators.required);
+		this.type = new Control("", Validators.required);
 		this.estimate = new Control("");
 		this.priority = new Control("");
 		this.assignee = new Control("");
-		this.story = new Control(this.stories[0],
+		this.story = new Control("",
 			Validators.compose([Validators.required])
 		);
+		this.clean();
 
 		this.form = builder.group({
 			title:  this.title,
@@ -77,12 +81,36 @@ export class TaskEditor {
 
     open() {
        this.modal.open();
+       this.clean();
+       this.status = null;
     }
 
+    clean(){
+		this.title.updateValue('');
+		this.type.updateValue(this.types[0]);
+		this.estimate.updateValue('');
+		this.priority.updateValue('');
+		this.assignee.updateValue('');
+		this.story.updateValue(this.stories[0]);
+    }
+    
 	submitData(){
+		this.submitted = true;
 		var value = this.form.value;
 		delete value['story'];
-     	this._userService.addTask(value);
+
+     	this._userService.addTask(value)
+     	.subscribe(
+      data => {console.log(data); this.taskSent();},
+      err => this.handleError(err),
+      () => console.log('Update completed')
+    );
+     	
     }
 
+	taskSent(){
+	  this.submitted = false;
+	  this.status = "Task successfully created";
+	  this.clean();
+	}
 }
