@@ -24,14 +24,14 @@ export class UsernameValidator {
 
 @Component({
   selector: 'task-editor',
-  inputs: ['storyTitles'];
+  inputs: ['stories'];
   directives: [MODAL_DIRECTIVES, FORM_DIRECTIVES],
   templateUrl: 'app/templates/task-editor.html',
 })
 
 export class TaskEditor {
 
-	public storyTitles: string[];
+	public stories: Story[];
 
     @ViewChild('modal')
     modal: ModalComponent;
@@ -64,9 +64,7 @@ export class TaskEditor {
 		this.estimate = new Control("");
 		this.priority = new Control("");
 		this.assignee = new Control("");
-		this.story = new Control("",
-			Validators.compose([Validators.required])
-		);
+		this.story = new Control("");
 		this.clean();
 
 		this.form = builder.group({
@@ -95,13 +93,12 @@ export class TaskEditor {
 		this.estimate.updateValue('');
 		this.priority.updateValue('');
 		this.assignee.updateValue('');
-		this.story.updateValue(!this.storyTitles ? "Backlog" : this.storyTitles[0]);
+		this.story.updateValue('');
     }
     
 	submitData(){
 		this.submitted = true;
 		var value = this.form.value;
-		delete value['story'];
 
      	this._userService.addTask(value)
      	.subscribe(

@@ -26,7 +26,6 @@ import {DragulaService, Dragula} from 'ng2-dragula';
 export class KanbanBoardComponent implements OnInit {
 
   stories: Story[] = [];
-  storyTitles: string[] = [];
 
   constructor(
     private _router: Router,
@@ -44,11 +43,6 @@ export class KanbanBoardComponent implements OnInit {
       .then(productId =>       this._userService.getStories(productId)
     	  .then(stories => { 
       		this.stories = stories; 
-
-			this.storyTitles.push('Backlog');
-		    this.stories.forEach((story: Story) => {
-		    	this.storyTitles.push(story.title);
-			}
       	  })
       );
   }
