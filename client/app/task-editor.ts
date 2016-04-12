@@ -1,5 +1,6 @@
 import {Component, ViewChild} from 'angular2/core';
 import { Task } from './model/task';
+import { Story } from './model/story';
 import { MODAL_DIRECTIVES, ModalComponent } from 'ng2-bs3-modal/ng2-bs3-modal';
 import { UserService } from './user.service';
 
@@ -23,11 +24,15 @@ export class UsernameValidator {
 
 @Component({
   selector: 'task-editor',
+  inputs: ['storyTitles'];
   directives: [MODAL_DIRECTIVES, FORM_DIRECTIVES],
   templateUrl: 'app/templates/task-editor.html',
 })
 
 export class TaskEditor {
+
+	public storyTitles: string[];
+
     @ViewChild('modal')
     modal: ModalComponent;
 
@@ -45,7 +50,6 @@ export class TaskEditor {
     types: string[] = ['Bug', 'Enhancement', 'Story'];
     priorities: string[] = ['Low', 'Medium', 'High', 'Critical'];
 	assignees: string[] = ['Marcin Wachowiak', 'Joe Doe'];
-	stories: string[] = ['Backlog', 'Story A'];
 
 	constructor(
 		private builder: FormBuilder,
@@ -91,7 +95,7 @@ export class TaskEditor {
 		this.estimate.updateValue('');
 		this.priority.updateValue('');
 		this.assignee.updateValue('');
-		this.story.updateValue(this.stories[0]);
+		this.story.updateValue(!this.storyTitles ? "Backlog" : this.storyTitles[0]);
     }
     
 	submitData(){
